@@ -1,0 +1,42 @@
+---
+title: "OAuth 2.1"
+description: "El Authorization Server del conector de Oktopus: OAuth 2.1 + PKCE (S256), Dynamic Client Registration, scopes y refresh rotation."
+---
+
+Para clientes que soportan el flujo (Claude.ai, el directorio de conectores de Anthropic), Oktopus expone un **Authorization Server OAuth 2.1** completo. No hace falta pegar API keys: el usuario inicia sesión y autoriza scopes en una pantalla de consentimiento.
+
+## Endpoints
+
+| | |
+|---|---|
+| **Authorization** | `https://www.oktopus.lat/api/oauth/authorize` |
+| **Token** | `https://www.oktopus.lat/api/oauth/token` |
+| **Registro (DCR, RFC 7591)** | `https://www.oktopus.lat/api/oauth/register` |
+| **Revocación (RFC 7009)** | `https://www.oktopus.lat/api/oauth/revoke` |
+| **Metadata del AS (RFC 8414)** | [`/.well-known/oauth-authorization-server`](https://www.oktopus.lat/.well-known/oauth-authorization-server) |
+| **Metadata del recurso (RFC 9728)** | [`/.well-known/oauth-protected-resource`](https://www.oktopus.lat/.well-known/oauth-protected-resource) |
+
+## Cómo funciona el flujo
+
+1. El cliente se registra por **DCR** (`POST /api/oauth/register`) — los `redirect_uri` están limitados a los callbacks de Claude y a loopback (`http://127.0.0.1:<puerto>/callback`).
+2. `GET /api/oauth/authorize` con **PKCE S256 obligatorio** y `resource=https://www.oktopus.lat/api/mcp` (RFC 8707).
+3. El usuario inicia sesión en Oktopus y **aprueba los scopes** en la pantalla de consentimiento.
+4. El cliente canjea el `code` en `POST /api/oauth/token` (con `code_verifier`) → recibe `access_token` (1 h) + `refresh_token`.
+5. Usa el access token contra el MCP: `Authorization: Bearer okto_oauth_...`.
+
+## Scopes disponibles
+
+`mcp:invoke` · `orders:create` · `orders:read` · `orders:write` · `products:read` · `products:write` · `landings:read` · `landings:write` · `stores:read` · `stores:write` · `whatsapp:write`
+
+<Note>
+`ai:generate` (generación de imágenes/video con IA) está **fuera** del conector OAuth por diseño.
+</Note>
+
+## Seguridad
+
+- **PKCE S256 obligatorio** — sin `code_challenge` no hay flujo; `plain` se rechaza.
+- **Audiencia validada** — el token solo sirve para el MCP (`resource`), fail-closed.
+- **Codes single-use** (60 s, consumo atómico — un replay falla).
+- **Refresh rotation con detección de reuso**: si un refresh ya rotado se reusa, se revoca **toda la familia** de tokens.
+- **Allowlist de redirects** — no se puede registrar un cliente con un callback arbitrario (anti-phishing).
+- Errores OAuth genéricos (`invalid_grant`) — sin filtración de internals.

@@ -1,0 +1,47 @@
+---
+title: "El MCP server"
+description: "Arquitectura del MCP server de Oktopus: Streamable HTTP stateless, autenticación por API key u OAuth 2.1, rate limits y seguridad."
+---
+
+## Endpoint y transporte
+
+| | |
+|---|---|
+| **Endpoint** | `https://www.oktopus.lat/api/mcp` |
+| **Transporte** | Streamable HTTP (JSON response mode, sin canal SSE) |
+| **Método** | `POST` (un GET devuelve 405) |
+| **Headers requeridos** | `Authorization: Bearer …` + `Accept: application/json, text/event-stream` |
+
+<Note>
+`https://www.oktopus.lat/mcp` es un alias que reescribe a `/api/mcp`. El recurso **canónico** (el que declaran los `.well-known` y valida la audiencia OAuth) es `/api/mcp`.
+</Note>
+
+## Autenticación
+
+Dos caminos, mismo resultado:
+
+1. **API key (Bearer)** — `Authorization: Bearer okto_live_secret_...`. La generás en [el dashboard](https://www.oktopus.lat/app/configuracion). Requiere el scope `mcp:invoke`.
+2. **OAuth 2.1 + PKCE** — para clientes que soportan el flujo (Claude.ai, directorio de conectores). Registro dinámico de clientes, consent con scopes y refresh rotation. Detalle en [OAuth](/mcp/oauth).
+
+La identidad sale **siempre de la credencial verificada en base de datos** — nunca de headers falsificables.
+
+## Rate limits
+
+- **120 tool-calls por minuto** por credencial (header `X-RateLimit-Remaining` en cada respuesta; `Retry-After` si te pasás).
+
+## Seguridad
+
+- Validación de `Origin` (anti DNS-rebinding) en el transporte.
+- Scopes por categoría de tool (`orders:write`, `products:write`, etc.) — el agente solo puede lo que su credencial permite.
+- Las tools de **generación de imágenes/video con IA están excluidas** del conector OAuth.
+- El MCP **nunca** expone billing, borrado de cuenta/tienda ni rotación de secretos.
+
+## Descubrimiento para agentes
+
+| Recurso | URL |
+|---|---|
+| llms.txt | [`/llms.txt`](https://www.oktopus.lat/llms.txt) |
+| Manifiesto MCP | [`/.well-known/mcp.json`](https://www.oktopus.lat/.well-known/mcp.json) |
+| Metadata OAuth (RFC 9728) | [`/.well-known/oauth-protected-resource`](https://www.oktopus.lat/.well-known/oauth-protected-resource) |
+| OpenAPI (REST) | [`/openapi.json`](https://www.oktopus.lat/openapi.json) |
+| Registro oficial MCP | `lat.oktopus/checkout-cod` |

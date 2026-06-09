@@ -1,0 +1,89 @@
+---
+title: "Tools (47+)"
+description: "El catálogo completo de herramientas del MCP de Oktopus, por categoría: negocio, productos, landings, órdenes COD, Dropi, WhatsApp, checkout y tienda."
+---
+
+El MCP expone **más de 47 herramientas**. La lista autoritativa siempre la devuelve `tools/list`; este es el catálogo por categoría:
+
+## Negocio y métricas
+
+| Tool | Qué hace |
+|---|---|
+| `okto_dashboard_metrics` | Resumen del negocio: ingresos 30d, órdenes pendientes, productos. |
+| `okto_account_status` | Plan, estado de suscripción y límites de la cuenta. |
+| `okto_audit_recent` | Actividad reciente de la cuenta. |
+
+## Productos
+
+| Tool | Qué hace |
+|---|---|
+| `okto_product_create` | Crear un producto (nombre, precio, descripción, imágenes). |
+| `okto_product_update` | Editar un producto. |
+| `okto_product_price_update` | Actualizar precio / precio tachado. |
+| `okto_products_list` | Listar productos. |
+| `okto_product_lookup` | Buscar por nombre. |
+| `okto_products_delete` | Borrar productos. |
+| `okto_products_duplicates` | Detectar duplicados. |
+| `okto_product_normalize_name` | Normalizar nombres. |
+
+## Landings
+
+| Tool | Qué hace |
+|---|---|
+| `okto_landing_get` / `okto_landings_list` | Ver y listar landings. |
+| `okto_landing_edit` | Editar una landing. |
+| `okto_landing_publish` | Publicar. |
+| `okto_landing_set_field` | Cambiar un texto puntual. |
+| `okto_landing_set_branding` | Colores y marca. |
+| `okto_landing_toggle_guarantee` | Activar/desactivar la garantía. |
+| `okto_landing_status_set` | Publicar/ocultar. |
+| `okto_landing_eject` | **Exportar la landing a código editable (HTML + React)** para self-host. |
+
+## Órdenes de contraentrega (COD)
+
+| Tool | Qué hace |
+|---|---|
+| `okto_order_create_cod` | Crear una orden de pago contra entrega. |
+| `okto_order_get` | Detalle de una orden + estado en Dropi. |
+| `okto_order_update_status` | Cambiar el estado. |
+| `okto_orders_list` / `okto_orders_recent` | Listar órdenes. |
+| `okto_orders_unsynced_dropi` | Órdenes que faltan empujar a Dropi. |
+
+## Dropi
+
+| Tool | Qué hace |
+|---|---|
+| `okto_dropi_link` / `okto_dropi_connection` | Conectar y ver la conexión Dropi. |
+| `okto_dropi_push_order` | Empujar una orden a Dropi (idempotente). |
+| `okto_dropi_products_search` / `okto_dropi_product_get` | Buscar en el catálogo Dropi. |
+| `okto_dropi_coverage_overview` / `okto_dropi_coverage_get` / `okto_dropi_coverage_cities` | Cobertura de contraentrega por país/ciudad. |
+| `okto_dropi_webhooks_recent` | Webhooks recientes de Dropi. |
+
+## WhatsApp
+
+| Tool | Qué hace |
+|---|---|
+| `okto_wa_status` | Estado de la conexión WhatsApp. |
+| `okto_wa_conversations` / `okto_wa_conversation_get` | Ver conversaciones. |
+| `okto_wa_agent_configure` / `okto_wa_agent_get` / `okto_wa_agent_toggle` | Configurar y prender/apagar los agentes de venta. |
+| `okto_wa_diego_toggle` | El agente de ads CTWA (Diego). |
+| `okto_wa_handoff` | Escalar una conversación a un humano. |
+
+## Checkout / tu propia página
+
+| Tool | Qué hace |
+|---|---|
+| `okto_checkout_key_create` | Acuña la *publishable key* + snippet para conectar **tu propia página** al checkout COD. |
+| `okto_page_playbook` | Playbook de página COD que convierte (estructura + gatillos + pixel/CAPI). |
+| `okto_pixel_get` / `okto_pixel_set` | Configurar el pixel de Meta. |
+
+## Tienda y soporte
+
+| Tool | Qué hace |
+|---|---|
+| `okto_store_create` / `okto_store_get` / `okto_store_update_settings` | Crear y configurar tiendas. |
+| `okto_support_ask` | Preguntarle al soporte de Oktopus. |
+
+<Note>
+Con un token **OAuth**, las tools de generación de imágenes/video con IA (`okto_landing_generate_full`, `okto_product_images_generate`, `okto_image_regenerate`) **no aparecen** — están excluidas del conector. Con API key propia sí están disponibles.
+</Note>

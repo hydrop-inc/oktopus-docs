@@ -1,0 +1,38 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Oktopus Docs",
+  "description": "Documentación de Oktopus — el riel de pago contra entrega (COD) para LATAM, agent-native.",
+  "colors": {
+    "primary": "#7c3aed",
+    "light": "#a78bfa",
+    "dark": "#5b21b6"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo.png",
+    "dark": "/logo.png"
+  },
+  "navigation": {
+    "groups": [
+      { "group": "Empezar", "pages": ["index", "quickstart"] },
+      { "group": "MCP server", "pages": ["mcp/server", "mcp/tools", "mcp/oauth"] },
+      { "group": "Checkout COD", "pages": ["checkout/conecta-tu-pagina"] },
+      { "group": "API", "pages": ["api/rest"] },
+      { "group": "Recursos", "pages": ["recursos"] }
+    ]
+  },
+  "navbar": {
+    "links": [
+      { "label": "GitHub", "href": "https://github.com/hydrop-inc/oktopus-plugin" },
+      { "label": "oktopus.lat", "href": "https://www.oktopus.lat" }
+    ],
+    "primary": { "type": "button", "label": "Probar Oktopus", "href": "https://www.oktopus.lat" }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/hydrop-inc",
+      "website": "https://www.oktopus.lat"
+    }
+  }
+}

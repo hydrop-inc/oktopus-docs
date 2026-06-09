@@ -1,0 +1,54 @@
+---
+title: "Conectá tu propia página"
+description: "Traé tu página, usá nuestro riel: tres niveles de libertad para cobrar contra entrega desde cualquier sitio — widget, headless o eject."
+---
+
+No tenés que usar nuestras landings ni nuestro hosting. Armá tu página donde quieras (Claude Code, tu Vercel, Framer, tu propio React) y enchufale el **checkout de contraentrega de Oktopus**. La orden entra igual que una landing nativa: anti-fraude de precio + push a Dropi + confirmación por WhatsApp.
+
+## Nivel 1 — Widget (cero backend)
+
+Pegás un snippet y listo:
+
+```html
+<script src="https://www.oktopus.lat/checkout.js"></script>
+<script>
+  Oktopus.checkout({
+    key: "okto_pk_...",        // tu publishable key
+    productId: "PRODUCT_ID",
+  })
+</script>
+```
+
+## Nivel 2 — Headless (tu formulario + nuestra API)
+
+Tu form, tu diseño; la orden entra por la API con tu publishable key:
+
+```bash
+curl -X POST https://www.oktopus.lat/api/orders/create \
+  -H "Content-Type: application/json" \
+  -d '{
+    "key": "okto_pk_...",
+    "product_id": "PRODUCT_ID",
+    "customer_name": "Juan Pérez",
+    "customer_phone": "3001234567",
+    "customer_department": "Cundinamarca",
+    "customer_city": "Bogotá",
+    "customer_address": "Calle 123 #45-67"
+  }'
+```
+
+## Nivel 3 — Eject (llevate la landing a código)
+
+¿Te gusta una landing generada en Oktopus pero querés hostearla vos? `okto_landing_eject` te la exporta a **HTML + React editable** para tu propio Vercel. El checkout sigue cobrando por el riel de Oktopus.
+
+## La clave: tu agente lo hace solo
+
+Con el MCP conectado, el agente acuña la llave y te arma el snippet sin que entres al dashboard:
+
+> "Acuñá una publishable key para midominio.com y dame el snippet del checkout para el producto X."
+
+(Internamente llama `okto_checkout_key_create({ domains, product_id })`.) Y `okto_page_playbook` le da al agente la receta de una **página COD que convierte**: estructura, gatillos mentales y pixel/CAPI con los datos reales de tu cuenta.
+
+<Tip>
+La conversión **Purchase** la dispara Oktopus server-side (CAPI) también para órdenes de páginas externas — tu pixel de Meta sigue midiendo aunque la página no viva en Oktopus.
+</Tip>

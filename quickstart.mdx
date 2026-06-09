@@ -1,0 +1,66 @@
+---
+title: "Quickstart — conectar el MCP"
+description: "Conectá el MCP server de Oktopus a Claude Code, Claude Desktop o Cursor en 2 minutos, con API key o OAuth."
+---
+
+El endpoint del MCP server (Streamable HTTP) es:
+
+```text
+https://www.oktopus.lat/api/mcp
+```
+
+## 1. Conseguí tu API key
+
+Andá a [Configuración → Plataforma de agentes → API keys](https://www.oktopus.lat/app/configuracion) y generá una key tipo `secret` con scope `mcp:invoke` (sumá `orders:write`, `products:write`, `landings:write` según lo que necesite tu agente). El formato es `okto_live_secret_...`.
+
+<Tip>
+Para probar sin tocar Dropi real, usá una key `test` (`okto_test_secret_...`).
+</Tip>
+
+## 2. Conectá tu cliente
+
+<Tabs>
+  <Tab title="Claude Code">
+    ```bash
+    claude mcp add --transport http oktopus \
+      https://www.oktopus.lat/api/mcp \
+      --header "Authorization: Bearer TU_API_KEY"
+    ```
+  </Tab>
+  <Tab title="Plugin de Claude Code">
+    ```bash
+    # Marketplace + plugin oficial (incluye skills)
+    claude plugin marketplace add hydrop-inc/oktopus-plugin
+    claude plugin install oktopus@oktopus
+    export OKTOPUS_API_KEY=okto_live_secret_...
+    ```
+    Trae las skills `montar-tienda-cod` y `conectar-mi-pagina`.
+  </Tab>
+  <Tab title="Cursor / otros">
+    Agregá un MCP server remoto con transporte **HTTP (Streamable)**:
+    ```json
+    {
+      "mcpServers": {
+        "oktopus": {
+          "url": "https://www.oktopus.lat/api/mcp",
+          "headers": { "Authorization": "Bearer TU_API_KEY" }
+        }
+      }
+    }
+    ```
+  </Tab>
+</Tabs>
+
+También podés conectar por **OAuth 2.1** (sin pegar keys): ver [OAuth](/mcp/oauth).
+
+## 3. Probalo
+
+Pedile a tu agente, por ejemplo:
+
+> "¿Cómo va el negocio este mes?"
+>
+> "Mostrame las órdenes de hoy y empujá las confirmadas a Dropi."
+>
+> "Creá una orden de pago contra entrega para Juan en Bogotá, producto X."
+
+El catálogo completo de herramientas está en [Tools](/mcp/tools).

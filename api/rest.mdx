@@ -1,0 +1,26 @@
+---
+title: "API REST (OpenAPI)"
+description: "La API REST pública de Oktopus para crear órdenes de contraentrega y consultar cobertura, con especificación OpenAPI 3.0."
+---
+
+Además del MCP, Oktopus expone una **API REST** para los flujos agent-facing y de integración directa. La especificación completa, máquina-legible:
+
+```text
+https://www.oktopus.lat/openapi.json
+```
+
+## Endpoints principales
+
+| Endpoint | Qué hace |
+|---|---|
+| `POST /api/orders/create` | Crear una orden de contraentrega desde tu propia página (publishable key). |
+| `GET /api/cities?country=CO` | Ciudades válidas por país (para el campo ciudad del checkout — evita el mismatch comprador↔Dropi). |
+
+## Autenticación
+
+- **Publishable key** (`okto_pk_...`) — para el checkout en páginas públicas (solo puede crear órdenes de los productos/dominios autorizados).
+- **Secret key** (`okto_live_secret_...`) — para operaciones de cuenta vía MCP/REST. Nunca la pongas en una página pública.
+
+<Tip>
+¿Tu cliente es un agente? Probablemente quieras el [MCP](/mcp/server) en vez de la REST — el MCP ya trae las 47+ tools con sus schemas.
+</Tip>
