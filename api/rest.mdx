@@ -13,14 +13,14 @@ https://www.oktopus.lat/openapi.json
 
 | Endpoint | Qué hace |
 |---|---|
-| `POST /api/orders/create` | Crear una orden de contraentrega desde tu propia página (publishable key). |
-| `GET /api/cities?country=CO` | Ciudades válidas por país (para el campo ciudad del checkout — evita el mismatch comprador↔Dropi). |
+| `POST /api/orders/create` | Crear una orden de contraentrega desde tu propia página (publishable key). Los campos del body van **en español** (`nombre`, `telefono`, `departamento`, `ciudad`, `direccion`…) — el contrato completo con los campos por país está en el [OpenAPI](https://www.oktopus.lat/openapi.json) y en [Conectá tu propia página](/checkout/conecta-tu-pagina). |
+| `GET /api/geo/cities?country=CO` | Ciudades válidas por país (para el campo ciudad del checkout — evita el mismatch comprador↔Dropi). En PY, MX, CO, PA y EC el server además **canonicaliza** la ciudad contra el catálogo de Dropi al crear la orden. |
 
 ## Autenticación
 
-- **Publishable key** (`okto_pk_...`) — para el checkout en páginas públicas (solo puede crear órdenes de los productos/dominios autorizados).
-- **Secret key** (`okto_live_secret_...`) — para operaciones de cuenta vía MCP/REST. Nunca la pongas en una página pública.
+- **Publishable key** (`okto_live_pub_...`, o `okto_test_pub_...` para sandbox) — para el checkout en páginas públicas. Va en el header **`x-okto-api-key`**. Solo puede crear órdenes de los productos/dominios autorizados; una key de test crea la orden SIN empujarla a Dropi.
+- **Secret key** (`okto_live_secret_...`) — para operaciones de cuenta vía MCP/REST (`Authorization: Bearer ...`). Nunca la pongas en una página pública.
 
 <Tip>
-¿Tu cliente es un agente? Probablemente quieras el [MCP](/mcp/server) en vez de la REST — el MCP ya trae las 47+ tools con sus schemas.
+¿Tu cliente es un agente? Probablemente quieras el [MCP](/mcp/server) en vez de la REST — el MCP ya trae las 71 tools con sus schemas.
 </Tip>

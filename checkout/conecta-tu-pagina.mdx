@@ -7,35 +7,63 @@ No tenés que usar nuestras landings ni nuestro hosting. Armá tu página donde 
 
 ## Nivel 1 — Widget (cero backend)
 
-Pegás un snippet y listo:
+Pegás el snippet que devuelve `okto_checkout_key_create` y listo:
 
 ```html
-<script src="https://www.oktopus.lat/checkout.js"></script>
+<div id="oktopus-checkout"></div>
+<script src="https://www.oktopus.lat/embed/oktopus-checkout.js"></script>
 <script>
   Oktopus.checkout({
-    key: "okto_pk_...",        // tu publishable key
-    productId: "PRODUCT_ID",
+    publishableKey: 'okto_live_pub_...',
+    productId: 'UUID-DEL-PRODUCTO',
+    country: 'CO',
+    unitPrice: 89900,
+    productName: 'Mi Producto',
+    mount: '#oktopus-checkout',
   })
 </script>
 ```
 
 ## Nivel 2 — Headless (tu formulario + nuestra API)
 
-Tu form, tu diseño; la orden entra por la API con tu publishable key:
+Tu form, tu diseño; la orden entra por `POST /api/orders/create` con tu publishable key en el header **`x-okto-api-key`**. Los campos van **en español**:
 
 ```bash
 curl -X POST https://www.oktopus.lat/api/orders/create \
   -H "Content-Type: application/json" \
+  -H "x-okto-api-key: okto_live_pub_..." \
   -d '{
-    "key": "okto_pk_...",
-    "product_id": "PRODUCT_ID",
-    "customer_name": "Juan Pérez",
-    "customer_phone": "3001234567",
-    "customer_department": "Cundinamarca",
-    "customer_city": "Bogotá",
-    "customer_address": "Calle 123 #45-67"
+    "product_id": "UUID-DEL-PRODUCTO",
+    "store_id": "UUID-DE-LA-TIENDA",
+    "nombre": "Juan Pérez",
+    "telefono": "3001234567",
+    "departamento": "Cundinamarca",
+    "ciudad": "Bogotá",
+    "direccion": "Calle 123 #45-67",
+    "barrio": "Chapinero",
+    "quantity": 1,
+    "unit_price": 89900,
+    "total_price": 89900
   }'
 ```
+
+Respuesta: `201 { success: true, data: { id, order_number, status: "pending", ... } }`. El precio se valida server-side contra el producto (anti-fraude); una key `okto_test_pub_...` crea la orden sin empujarla a Dropi.
+
+### Campos por país
+
+`departamento` + `ciudad` + `direccion` son la base en todos los países. Además:
+
+| País | Campos extra |
+|---|---|
+| CO / PY | `barrio` (opcional) |
+| MX | `colonia` + `codigo_postal` |
+| EC | `colonia` (barrio/sector) + `calle_secundaria` + `color_casa` + `referencia` |
+| PE / CR / PA | `distrito` |
+| AR | `codigo_postal` (opcional) |
+
+<Tip>
+Poblá el campo ciudad desde `GET /api/geo/cities?country=XX` — son las ciudades que Dropi acepta. En **PY, MX, CO, PA y EC** el server canonicaliza la ciudad contra el catálogo de Dropi al crear la orden, así el push a la transportadora nunca rebota por un nombre de ciudad escrito distinto.
+</Tip>
 
 ## Nivel 3 — Eject (llevate la landing a código)
 
